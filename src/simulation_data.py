@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import io
 
 data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_suceptible", "day"]
 
