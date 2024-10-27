@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 
 data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_suceptible", "day"]
 
@@ -10,7 +11,7 @@ class SimulationData():
         self.totalDays = 0
 
     def addDayData(self, numInfected, numInfectious, numImmune, numAlive):
-        self.days.append({"number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_suceptible": numAlive - (numInfectious + numImmune), "day": self.totalDays})
+        self.days.append({"day": self.totalDays, "number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_suceptible": numAlive - (numInfectious + numImmune)})
         self.totalDays+=1
     
     def getDataXY(self, x_type, y_type):
@@ -22,6 +23,10 @@ class SimulationData():
         plt.xlabel(x_type)
         plt.ylabel(y_type)
         plt.show()
+
+    def exportDataAsCSV(self, filename):
+        df = pd.DataFrame(self.days)
+        df.to_csv(filename, index=False)
     
     def _printAllData(self):
         print(self.days)

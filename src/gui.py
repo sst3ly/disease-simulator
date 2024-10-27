@@ -136,6 +136,13 @@ class SimulationScreen(tk.Frame):
         )
         runSimButton.pack(side="bottom", fill=tk.X, padx=20, pady=10)
 
+        SaveAsCSV = tk.Button(
+            self,
+            text="Save Data as CSV",
+            command=lambda: self.saveAsCSV()
+        )
+        SaveAsCSV.pack(side="bottom", fill=tk.X, padx=20, pady=10)
+
         saveSimButton = tk.Button(
             self,
             text="Save Simulation",
@@ -212,11 +219,23 @@ class SimulationScreen(tk.Frame):
     
     def saveSim(self):
         if(self.simData == None): 
-            tk.messagebox.showinfo("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
+            tk.messagebox.showerror("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
             return
         fn = asksaveasfilename(title="Select Simulation Data File", filetypes = (("Pickle Files", ".pickle .pkl"),))
-        if(fn == ""): return
+        if(fn == ""): 
+            tk.messagebox.showerror("Please select a valid file")
+            return
         pickle.dump(self.simData, open(fn, "wb"))
+
+    def saveAsCSV(self):
+        if(self.simData == None):
+            tk.messagebox.showerror("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
+        fn = asksaveasfilename(title="Select Simulation Data File", filetypes= (("CSV Files", ".csv"),))
+        if(fn == ""): 
+            tk.messagebox.showerror("Please select a valid file")
+            return
+        self.simData.exportDataAsCSV(fn)
+
 
 
 '''
