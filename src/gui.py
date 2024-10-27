@@ -91,7 +91,6 @@ class SimulationScreen(tk.Frame):
         dtilf.pack()
 
         DTIL = tk.Label(dtilf, text="Incubation Period: ")
-        DTIL = tk.Label(dtilf, text="Avg Days till Infectious: ")
         DTIL.pack(padx=10)
 
         self.DTI = tk.Entry(dtilf, validate="all", validatecommand=vicmd)
@@ -102,7 +101,6 @@ class SimulationScreen(tk.Frame):
         illf.pack()
 
         IL_L = tk.Label(illf, text="Infectious Period Length")
-        IL_L = tk.Label(illf, text="Avg Infection Length")
         IL_L.pack(padx=10)
 
         self.IL = tk.Entry(illf, validate="all", validatecommand=vicmd)
