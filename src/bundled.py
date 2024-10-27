@@ -1,5 +1,4 @@
 import random
-from simulator import Simulation
 import tkinter as tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import pickle
