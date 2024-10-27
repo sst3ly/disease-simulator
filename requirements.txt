@@ -13,3 +13,4 @@ tk==0.1.0
 pandas==2.2.3
 pytz>=2020.1
 tzdata>=2022.7
+setuptools==70.3.0
