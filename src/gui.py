@@ -203,13 +203,13 @@ class SimulationScreen(tk.Frame):
         ax = self.fig.add_subplot(111)
         x, y = self.simData.getDataXY("day", "number_infected")
         x2, y2 = self.simData.getDataXY("day", "number_immune")
-        x3, y3 = self.simData.getDataXY("day", "number_suceptible")
-        sur = ax.plot(x3, y3, "go-", linewidth=2, markersize=4, label="Suceptible")
+        x3, y3 = self.simData.getDataXY("day", "number_susceptible")
+        sur = ax.plot(x3, y3, "go-", linewidth=2, markersize=4, label="susceptible")
         inf = ax.plot(x, y, "ro-", linewidth=2, markersize=4, label="Infected")
         imm = ax.plot(x2, y2, "bo-", linewidth=2, markersize=4, label="Recovered")
         ax.legend()
 
-        ax.set_title("Number of infected/immune by day")
+        ax.set_title("Number of SIR by day")
         ax.set_xlabel("Day")
         ax.set_ylabel("Number of inected/immune")
 

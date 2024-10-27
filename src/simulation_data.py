@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_suceptible", "day"]
+data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_susceptible", "day"]
 
 class SimulationData():
     def __init__(self, populationSize, randSeed):
@@ -11,7 +11,7 @@ class SimulationData():
         self.totalDays = 0
 
     def addDayData(self, numInfected, numInfectious, numImmune, numAlive):
-        self.days.append({"day": self.totalDays, "number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_suceptible": numAlive - (numInfectious + numImmune)})
+        self.days.append({"day": self.totalDays, "number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_susceptible": max(0, numAlive - (numInfectious + numImmune))})
         self.totalDays+=1
     
     def getDataXY(self, x_type, y_type):

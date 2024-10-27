@@ -5,7 +5,7 @@ import pickle
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 class Simulation:
     def __init__(self, population_size, virulence, avgDTI, avgIL, DC, debug=False):
@@ -121,7 +121,7 @@ class Person:
             self.infected = True
 
 
-data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_suceptible", "day"]
+data = ["number_infected", "number_infectious", "number_immune", "number_alive", "number_dead", "number_susceptible", "day"]
 
 class SimulationData():
     def __init__(self, populationSize, randSeed):
@@ -131,7 +131,7 @@ class SimulationData():
         self.totalDays = 0
 
     def addDayData(self, numInfected, numInfectious, numImmune, numAlive):
-        self.days.append({"number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_suceptible": numAlive - (numInfectious + numImmune), "day": self.totalDays})
+        self.days.append({"day": self.totalDays, "number_infected": numInfected, "number_infectious": numInfectious, "number_immune": numImmune, "number_alive": numAlive, "number_dead": self.popSize - numAlive, "number_susceptible": max(0, numAlive - (numInfectious + numImmune))})
         self.totalDays+=1
     
     def getDataXY(self, x_type, y_type):
@@ -143,6 +143,10 @@ class SimulationData():
         plt.xlabel(x_type)
         plt.ylabel(y_type)
         plt.show()
+
+    def exportDataAsCSV(self, filename):
+        df = pd.DataFrame(self.days)
+        df.to_csv(filename, index=False)
     
     def _printAllData(self):
         print(self.days)
@@ -279,6 +283,13 @@ class SimulationScreen(tk.Frame):
         )
         runSimButton.pack(side="bottom", fill=tk.X, padx=20, pady=10)
 
+        SaveAsCSV = tk.Button(
+            self,
+            text="Save Data as CSV",
+            command=lambda: self.saveAsCSV()
+        )
+        SaveAsCSV.pack(side="bottom", fill=tk.X, padx=20, pady=10)
+
         saveSimButton = tk.Button(
             self,
             text="Save Simulation",
@@ -339,13 +350,13 @@ class SimulationScreen(tk.Frame):
         ax = self.fig.add_subplot(111)
         x, y = self.simData.getDataXY("day", "number_infected")
         x2, y2 = self.simData.getDataXY("day", "number_immune")
-        x3, y3 = self.simData.getDataXY("day", "number_suceptible")
-        sur = ax.plot(x3, y3, "go-", linewidth=2, markersize=4, label="Suceptible")
+        x3, y3 = self.simData.getDataXY("day", "number_susceptible")
+        sur = ax.plot(x3, y3, "go-", linewidth=2, markersize=4, label="susceptible")
         inf = ax.plot(x, y, "ro-", linewidth=2, markersize=4, label="Infected")
         imm = ax.plot(x2, y2, "bo-", linewidth=2, markersize=4, label="Recovered")
         ax.legend()
 
-        ax.set_title("Number of infected/immune by day")
+        ax.set_title("Number of SIR by day")
         ax.set_xlabel("Day")
         ax.set_ylabel("Number of inected/immune")
 
@@ -355,11 +366,22 @@ class SimulationScreen(tk.Frame):
     
     def saveSim(self):
         if(self.simData == None): 
-            tk.messagebox.showinfo("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
+            tk.messagebox.showerror("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
             return
         fn = asksaveasfilename(title="Select Simulation Data File", filetypes = (("Pickle Files", ".pickle .pkl"),))
-        if(fn == ""): return
+        if(fn == ""): 
+            tk.messagebox.showerror("Please select a valid file")
+            return
         pickle.dump(self.simData, open(fn, "wb"))
+
+    def saveAsCSV(self):
+        if(self.simData == None):
+            tk.messagebox.showerror("Unable to save Simulation Data", "No simulation data currently exists. Please make a new simulation or load a simulation first.")
+        fn = asksaveasfilename(title="Select Simulation Data File", filetypes= (("CSV Files", ".csv"),))
+        if(fn == ""): 
+            tk.messagebox.showerror("Please select a valid file")
+            return
+        self.simData.exportDataAsCSV(fn)
 
 if __name__ == "__main__":
     obj = Window()
